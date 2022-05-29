@@ -1,12 +1,10 @@
 package com.react.api.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import com.react.api.exceptions.custom.BadRequestException;
 import com.react.api.exceptions.custom.NotFoundException;
 import com.react.api.model.Course;
@@ -22,9 +20,6 @@ public class ProfessorServiceImpl implements ProfessorService {
 
 	@Autowired
 	private ProfessorRepository professorRepository;
-
-	@Autowired
-	private CourseRepository courseRepository;
 
 	@Autowired
 	private SubjectRepository subjectRepository;
@@ -117,7 +112,7 @@ public class ProfessorServiceImpl implements ProfessorService {
 		Professor professor = professorRepository.getById(professorId);
 		Subject subject = subjectRepository.getById(subjectId);
 		try {
-			professor.getCourses().remove(subject);
+			professor.getSubjects().remove(subject);
 			subject.getProfessors().remove(professor);
 		} catch (Exception e) {
 			throw new BadRequestException("No se pudo eliminar la materia");

@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import com.react.api.exceptions.custom.NotFoundException;
 import com.react.api.model.Subject;
 import com.react.api.repository.SubjectRepository;
 import com.react.api.service.SubjectService;
@@ -35,13 +36,13 @@ public class SubjectServiceImpl implements SubjectService {
 
 	@Override
 	@Transactional
-	public void delete(Long id) {
+	public void delete(Long id) throws NotFoundException {
 		subjectRepository.deleteById(id);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public Subject getByName(String name) {
+	public Subject getByName(String name) throws NotFoundException {
 		return subjectRepository.getByName(name);
 	}
 
@@ -49,6 +50,19 @@ public class SubjectServiceImpl implements SubjectService {
 	@Transactional
 	public List<Subject> findByNameLikeIgnoreCase(String term) {
 		return subjectRepository.findByNameLikeIgnoreCase(term);
+	}
+
+	@Override
+	@Transactional
+	public Subject edit(Long id, Subject newSubject) throws NotFoundException {
+		Subject subject = subjectRepository.getById(id);
+		if (newSubject.getName() != null) {
+			subject.setName(newSubject.getName());
+		}
+		if (newSubject.getDescription() != null) {
+			subject.setDescription(newSubject.getDescription());
+		}
+		return subject;
 	}
 
 }

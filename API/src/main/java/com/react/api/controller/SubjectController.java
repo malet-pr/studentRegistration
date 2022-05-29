@@ -1,6 +1,9 @@
 package com.react.api.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException.BadRequest;
 import com.react.api.dto.SubjectDTO;
 import com.react.api.exceptions.custom.NotFoundException;
+import com.react.api.model.Subject;
 import com.react.api.service.SubjectService;
 import com.react.api.utils.Mappers;
 
@@ -34,14 +38,12 @@ public class SubjectController {
         return new ResponseEntity<SubjectDTO>(subject, HttpStatus.OK);
     }
 
-    /*
-     * @GetMapping("/subjects")
-     * public ResponseEntity<List<SubjectDTO>> getSubjectListA() {
-     * List<SubjectDTO> subjects = mappers
-     * .listSubjectToListSubjectDTO(subjectService.findByLastNameWithoutTBA());
-     * return new ResponseEntity<List<SubjectDTO>>(subjects, HttpStatus.OK);
-     * }
-     */
+    @GetMapping("/subjects")
+    public ResponseEntity<List<SubjectDTO>> getSubjectList() {
+        List<Subject> sb = new ArrayList<>(subjectService.getAll());
+        List<SubjectDTO> subjects = sb.stream().map(s -> mappers.subjectToSubjectDTO(s)).collect(Collectors.toList());
+        return new ResponseEntity<List<SubjectDTO>>(subjects, HttpStatus.OK);
+    }
 
     @PostMapping("/addSubject")
     public ResponseEntity<SubjectDTO> addSubject(@RequestBody SubjectDTO subjectDto) throws BadRequest {
@@ -49,21 +51,31 @@ public class SubjectController {
         return new ResponseEntity<>(subjectDto, HttpStatus.CREATED);
     }
 
-    /*
-     * @PatchMapping("/editSubject")
-     * public ResponseEntity<SubjectDTO> editExistingSubjectById(@PathVariable Long
-     * id,
-     * 
-     * @RequestBody SubjectDTO subjectDto) throws BadRequest, NotFoundException {
-     * subjectService.editSubject(subjectDto, id);
-     * return new ResponseEntity<>(subjectDto, HttpStatus.ACCEPTED);
-     * }
-     */
-
     @DeleteMapping("/deleteSubject/{id}")
     public ResponseEntity deleteSubjectById(@PathVariable Long id) throws NotFoundException {
         subjectService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PatchMapping("/editSubject/{id}")
+    public ResponseEntity<SubjectDTO> editExistingSubjectById(@PathVariable Long id, @RequestBody SubjectDTO subjectDto)
+            throws BadRequest, NotFoundException {
+        Subject subject = subjectService.edit(id, mappers.subjectDTOToSubject(subjectDto));
+        SubjectDTO dto = mappers.subjectToSubjectDTO(subject);
+        return new ResponseEntity<SubjectDTO>(dto, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/getSubjectByCompleteName")
+    public ResponseEntity<SubjectDTO> getSubjectByCompleteName(@RequestBody String name) throws NotFoundException {
+        SubjectDTO dto = mappers.subjectToSubjectDTO(subjectService.getByName(name));
+        return new ResponseEntity<SubjectDTO>(dto, HttpStatus.OK);
+    }
+
+    @GetMapping("/findSubjectByPartialName")
+    public ResponseEntity<List<SubjectDTO>> getSubjectByPartialName(@RequestBody String term) throws NotFoundException {
+        List<Subject> sb = new ArrayList<>(subjectService.findByNameLikeIgnoreCase(term));
+        List<SubjectDTO> dtos = sb.stream().map(s -> mappers.subjectToSubjectDTO(s)).collect(Collectors.toList());
+        return new ResponseEntity<List<SubjectDTO>>(dtos, HttpStatus.OK);
     }
 
 }
