@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
@@ -81,7 +82,7 @@ public class StudentController {
     }
 
     @GetMapping("/findByLastName")
-    public ResponseEntity<List<StudentDTO>> findStudentsByLastName(@RequestBody String term)
+    public ResponseEntity<List<StudentDTO>> findStudentsByLastName(@RequestParam String term)
             throws NotFoundException {
         List<Student> st = new ArrayList<>(studentService.findByLastNameLikeIgnoreCase(term));
         List<StudentDTO> students = st.stream().map(s -> mappers.studentToStudentDTO(s))
@@ -90,7 +91,7 @@ public class StudentController {
     }
 
     @GetMapping("/findByNationalID")
-    public ResponseEntity<StudentDTO> findByNationaID(@RequestBody String term)
+    public ResponseEntity<StudentDTO> findByNationaID(@RequestParam String term)
             throws NotFoundException {
         StudentDTO student = mappers.studentToStudentDTO(studentService.getByNationalID(term));
         return new ResponseEntity<StudentDTO>(student, HttpStatus.OK);

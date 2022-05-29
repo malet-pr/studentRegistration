@@ -16,7 +16,7 @@ public interface SubjectService {
 
 	public Subject getByName(String name) throws NotFoundException;
 
-	public List<Subject> findByNameLikeIgnoreCase(String term);
+	public List<Subject> findByNameLikeIgnoreCase(String term) throws NotFoundException ;
 
 	public Subject edit(Long id, Subject newSubject) throws NotFoundException;
 

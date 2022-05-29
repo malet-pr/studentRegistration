@@ -18,25 +18,21 @@ public class StudentServiceImpl implements StudentService {
 	private StudentRepository studentRepository;
 
 	@Override
-	@Transactional(readOnly = true)
 	public List<Student> getAll() {
 		return (List<Student>) studentRepository.findAll(Sort.by(Sort.Direction.ASC, "lastName"));
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public Student getById(Long id) {
 		return studentRepository.findById(id).orElse(null);
 	}
 
 	@Override
-	@Transactional
 	public void save(Student student) {
 		studentRepository.save(student);
 	}
 
 	@Override
-	@Transactional
 	public void delete(Long id) throws NotFoundException {
 		studentRepository.deleteById(id);
 	}

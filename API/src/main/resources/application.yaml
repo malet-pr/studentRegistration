@@ -20,6 +20,18 @@ spring:
     init:
       mode: always
 
+logging:
+  level:
+    org:
+      hibernate:
+        SQL:
+          TRACE
+        type:
+          descriptor:
+            sql:
+              BasicBinder:
+                TRACE
+
 
 
 

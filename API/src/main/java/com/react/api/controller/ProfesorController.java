@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException.BadRequest;
 import com.react.api.dto.CourseDTO;
@@ -54,16 +55,24 @@ public class ProfesorController {
     }
 
     @GetMapping("/professorsByLastName")
-    public ResponseEntity<List<ProfessorDTO>> getProfessorListByLastName(@RequestBody String term) {
+    public ResponseEntity<List<ProfessorDTO>> getProfessorListByLastName(@RequestParam String term) {
         List<Professor> pr = new ArrayList<>(professorService.findByLastNameLikeIgnoreCase(term));
         List<ProfessorDTO> professors = pr.stream().map(p -> mappers.professorToProfessorDTO(p))
                 .collect(Collectors.toList());
         return new ResponseEntity<List<ProfessorDTO>>(professors, HttpStatus.OK);
     }
 
-    @GetMapping("/activeProfessors")
-    public ResponseEntity<List<ProfessorDTO>> getProfessorListActive(@RequestBody String term) {
+    @GetMapping("/activeProfessorsByLastName")
+    public ResponseEntity<List<ProfessorDTO>> getProfessorListByNameAndActive(@RequestParam String term) {
         List<Professor> pr = new ArrayList<>(professorService.findByLastNameLikeIgnoreCaseAndIsActive(term));
+        List<ProfessorDTO> professors = pr.stream().map(p -> mappers.professorToProfessorDTO(p))
+                .collect(Collectors.toList());
+        return new ResponseEntity<List<ProfessorDTO>>(professors, HttpStatus.OK);
+    }
+
+    @GetMapping("/activeProfessors")
+    public ResponseEntity<List<ProfessorDTO>> getProfessorListActive() {
+        List<Professor> pr = new ArrayList<>(professorService.getAllActive());
         List<ProfessorDTO> professors = pr.stream().map(p -> mappers.professorToProfessorDTO(p))
                 .collect(Collectors.toList());
         return new ResponseEntity<List<ProfessorDTO>>(professors, HttpStatus.OK);

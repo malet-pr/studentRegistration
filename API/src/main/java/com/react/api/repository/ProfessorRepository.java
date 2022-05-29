@@ -12,14 +12,7 @@ import com.react.api.model.Professor;
 @Repository
 public interface ProfessorRepository extends JpaRepository<Professor,Long> {
 
-
-	@Query("select p from Professor p where p.lastName <> 'TBA'")  
-    public List<Professor> findByLastNameWithoutTBA();
-	
-	@Query("select p from Professor p where p.lastName <> 'TBA' and  p.isActive=true")  
-    public List<Professor> findByLastNameWithoutTBAAndIsActive();
-	
-    
+   
     @Query("select p from Professor p where p.lastName like %?1%")  
     public List<Professor> findByLastNameLikeIgnoreCase(String term);
     

@@ -16,6 +16,7 @@ import com.react.api.repository.SubjectRepository;
 import com.react.api.service.ProfessorService;
 
 @Service
+@Transactional
 public class ProfessorServiceImpl implements ProfessorService {
 
 	@Autowired
@@ -25,25 +26,21 @@ public class ProfessorServiceImpl implements ProfessorService {
 	private SubjectRepository subjectRepository;
 
 	@Override
-	@Transactional(readOnly = true)
 	public List<Professor> getAll() {
 		return (List<Professor>) professorRepository.findAll(Sort.by(Sort.Direction.ASC, "lastName"));
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public Professor getById(Long id) {
 		return professorRepository.findById(id).orElse(null);
 	}
 
 	@Override
-	@Transactional
 	public void save(Professor professor) {
 		professorRepository.save(professor);
 	}
 
 	@Override
-	@Transactional
 	public void delete(Long id) throws NotFoundException {
 		professorRepository.deleteById(id);
 	}

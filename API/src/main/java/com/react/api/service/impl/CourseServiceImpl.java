@@ -19,6 +19,7 @@ import com.react.api.repository.SubjectRepository;
 import com.react.api.service.CourseService;
 
 @Service
+@Transactional
 public class CourseServiceImpl implements CourseService {
 
 	@Autowired
@@ -34,26 +35,22 @@ public class CourseServiceImpl implements CourseService {
 	private SubjectRepository subjectRepository;
 
 	@Override
-	@Transactional(readOnly = true)
 	public Course getById(Long id) {
 		Course course = courseRepository.findById(id).orElse(null);
 		return course;
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public List<Course> getAll() {
 		return (List<Course>) courseRepository.findAll(Sort.by(Sort.Direction.ASC, "code"));
 	}
 
 	@Override
-	@Transactional
 	public void save(Course course) {
 		courseRepository.save(course);
 	}
 
 	@Override
-	@Transactional
 	public void delete(Long id) throws NotFoundException {
 		courseRepository.deleteById(id);
 	}
@@ -89,7 +86,6 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
-	@Transactional
 	public void addStudent(Long courseId, Long studentId) throws NotFoundException {
 		Course course = courseRepository.getById(courseId);
 		Student student = studentRepository.getById(studentId);
@@ -107,7 +103,6 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
-	@Transactional
 	public void addProfessor(Long courseId, Long professorId) throws NotFoundException {
 		Course course = courseRepository.getById(courseId);
 		Professor professor = professorRepository.getById(professorId);
@@ -126,7 +121,6 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
-	@Transactional
 	public void addOrChangeSubject(Long courseId, Long subjectId) throws NotFoundException {
 		Course course = courseRepository.getById(courseId);
 		Subject subject = subjectRepository.getById(subjectId);
